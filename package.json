@@ -11,11 +11,14 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.7.7",
+    "express": "^4.21.1",
     "fishpi": "^0.0.46",
     "glob": "^10.2.3",
     "node-fetch": "<3.0.0",
     "node-localstorage": "^2.2.1",
     "node-schedule": "^2.1.1",
+    "redis": "^4.7.0",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.4"
