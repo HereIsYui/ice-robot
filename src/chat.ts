@@ -1,8 +1,8 @@
-import Fishpi, { NoticeMsg } from 'fishpi';
-import { domain } from '../config.json';
-import fetch from 'node-fetch';
-import { Robots } from '@bot/index';
-import * as Schedule from '@schedule/index';
+import Fishpi, { ClientType, NoticeMsg } from "fishpi";
+import { domain } from "../config.json";
+import fetch from "node-fetch";
+import { Robots } from "@bot/index";
+import * as Schedule from "@schedule/index";
 
 const fishpi = new Fishpi();
 fishpi.setDomain(domain);
@@ -12,7 +12,7 @@ export default {
   async login(config: any) {
     if (config.token) await fishpi.setToken(config.token);
     else if (config.username && config.passwd) await fishpi.login(config);
-    else throw new Error('请提供 token 或者用户名密码');
+    else throw new Error("请提供 token 或者用户名密码");
 
     const rsp = await fishpi.account.info();
     if (rsp.code) throw new Error(`登录失败：${rsp.msg}`);
@@ -21,8 +21,8 @@ export default {
   },
 
   async listen(bots: Robots) {
-    console.log('聊天室监听中...');
-    
+    console.log("聊天室监听中...");
+    fishpi.chatroom.setVia(ClientType.IceNet, "3.0");
     // 监听聊天室消息
     fishpi.chatroom.addListener(async ({ msg }) => {
       if (!bots[msg.type]) return;
@@ -35,13 +35,12 @@ export default {
 
     fishpi.chat.addListener(async ({ msg }) => {
       const chat = msg as NoticeMsg;
-      if (chat.command != 'newIdleChatMessage') return;
+      if (chat.command != "newIdleChatMessage") return;
       const { data: chats } = await fishpi.chat.get({ user: chat.senderUserName!, size: 2 });
-      const chatData = chats?.find(chat => chat.preview == chat.preview);
+      const chatData = chats?.find((chat) => chat.preview == chat.preview);
       if (bots.chats?.exec && chatData) bots.chats?.exec(chatData, fishpi);
     });
 
     Schedule.load(fishpi);
-  }
-}
-
+  },
+};

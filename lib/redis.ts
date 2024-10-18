@@ -16,6 +16,7 @@ export const initRedis = async () => {
 };
 
 export const setKey = async (key: string, value: any, exprires: any = null) => {
+  key = key.toUpperCase();
   if (!client) await initRedis();
   value = JSON.stringify(value);
   const res = await client.set(key, value);
@@ -25,6 +26,7 @@ export const setKey = async (key: string, value: any, exprires: any = null) => {
   }
 };
 export const getKey = async (key: string) => {
+  key = key.toUpperCase();
   if (!client) await initRedis();
   const value = await client.get(key);
   try {

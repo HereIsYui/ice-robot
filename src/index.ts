@@ -9,9 +9,7 @@ import { getKey, setKey } from "lib/redis";
     await chat.listen(bots);
     const admin = await getKey("admin");
     if (!admin) {
-      await setKey("admin", {
-        admin: ["Yui", "adlered"],
-      });
+      await setKey("admin", ["Yui", "adlered"]);
     }
   } catch (error) {
     console.error(error);
