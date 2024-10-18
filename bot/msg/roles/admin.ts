@@ -4,6 +4,7 @@ import { getKey } from "@lib/redis";
 import { addAdmin, addUserIntimacy, getAdmin, getUser, isAdmin, removeAdmin, updateUser } from "@lib/ice_fun";
 import axios from "axios";
 import config from "../../../config.json";
+import { music163 } from "@lib/chat_fun";
 
 export default [
   {

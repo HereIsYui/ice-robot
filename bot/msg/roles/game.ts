@@ -1,5 +1,6 @@
 import Fishpi, { ChatMsg, FingerTo, RedPacketType } from "fishpi";
 import { getAdmin, getUser, isAdmin, removeAdmin } from "@lib/ice_fun";
+import { getTianqi, music163 } from "@lib/chat_fun";
 export default [
   {
     match: [/^小冰 (来个|发个)红包/],
@@ -29,5 +30,43 @@ export default [
       }
     },
     enable: true,
+  },
+  {
+    match: [/^小冰 \w*天气/],
+    exec: async ({ md }: ChatMsg, fishpi: Fishpi) => {
+      let cb = await getTianqi(md.replace("小冰", ""));
+      await fishpi.chatroom.send(cb);
+    },
+    enable: true,
+  },
+  {
+    match: [/^点歌 .{0,10}$/],
+    exec: async ({ userName, md }: ChatMsg, fishpi: Fishpi) => {
+      let cb = await music163(md.trim().split(" ")[1]);
+      await fishpi.chatroom.send(cb);
+    },
+    enable: true,
+    priority: 1101,
+  },
+  {
+    match: [/(56c0f695|乌拉)/],
+    exec: async ({ userName, md }: ChatMsg, fishpi: Fishpi) => {
+      if (!["sevenSummer", "xiaoIce", "fishpi"].includes(userName)) {
+        await fishpi.chatroom.send("![乌拉乌拉](https://pwl.stackoverflow.wiki/2022/03/image-56c0f695.png)");
+      }
+    },
+    enable: true,
+    priority: 1101,
+  },
+  {
+    match: [/^TTS|^朗读/],
+    exec: async ({ md }: ChatMsg, fishpi: Fishpi) => {
+      const link =
+        Buffer.from("aHR0cHM6Ly9kaWN0LnlvdWRhby5jb20vZGljdHZvaWNlP2xlPXpoJmF1ZGlvPQ==", "base64") + encodeURIComponent(md.replace(/^TTS|^朗读/i, ""));
+      const cb = `那你可就听好了<br><audio src='${link}' controls/>`;
+      await fishpi.chatroom.send(cb);
+    },
+    enable: true,
+    priority: 1101,
   },
 ];

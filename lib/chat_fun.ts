@@ -1,4 +1,6 @@
 import axios from "axios";
+import city from "../city.json";
+import config from "../config.json";
 export async function music163(msg: string) {
   try {
     const res = await axios({
@@ -29,3 +31,62 @@ export async function music163(msg: string) {
     return "你丫的这首歌太难找了!换一个!";
   }
 }
+
+export const getTianqi = async function (msg: string): Promise<string> {
+  return await new Promise(async (resolve, reject) => {
+    const dateReg = /(今天|明天|后天|大后天)*天气/;
+    const date = (msg.match(dateReg) ?? "")[1];
+    let adr = "";
+    if (date) {
+      adr = msg.substring(0, msg.indexOf(date));
+    } else {
+      adr = msg.substring(0, msg.indexOf("天气"));
+    }
+    if (!adr) {
+      resolve("你查询了一个寂寞~ \n 天气指令：小冰 地点[时间]天气");
+    }
+    const vals = city.find((e) => e.addr.indexOf(adr) > -1);
+    console.log(vals);
+    if (vals == null) {
+      resolve(`未查询到地点：${adr}`);
+    } else {
+      try {
+        const res = await axios({
+          method: "get",
+          url: `https://api.caiyunapp.com/v2.5/${config.weather.key}/${vals.long},${vals.lat}/weather.json?alert=true`,
+        });
+        if (res.data.status == "ok") {
+          try {
+            const weatherData = res.data.result;
+            const weather = weatherData.daily.temperature;
+            const weatherCode = weatherData.daily.skycon;
+            let msg = "";
+            const date = [];
+            const weatherCodeList = [];
+            const max = [];
+            const min = [];
+            for (let i = 0; i < 5; i++) {
+              const ndate = new Date(weather[i].date);
+              const m = ndate.getMonth() + 1;
+              const d = ndate.getDate();
+              date.push(`${m}/${d}`);
+              weatherCodeList.push(weatherCode[i].value);
+              max.push(weather[i].max);
+              min.push(weather[i].min);
+            }
+            msg = `[weather]{"type":"weather","date":"${date.join(",")}","weatherCode":"${weatherCodeList.join(",")}","max":"${max.join(
+              ","
+            )}","min":"${min.join(",")}","t":"${adr}","st":"${weatherData.forecast_keypoint}"}[/weather]`;
+            resolve(msg);
+          } catch (e) {
+            resolve("小冰的天气接口出错了哦~");
+          }
+        } else {
+          resolve("小冰的天气接口出错了哦~");
+        }
+      } catch (error) {
+        resolve("小冰的天气接口出错了哦~");
+      }
+    }
+  });
+};
