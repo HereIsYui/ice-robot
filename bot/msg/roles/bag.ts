@@ -3,6 +3,7 @@ import { timeout } from "@/config.json";
 import { getUser, updateUser } from "@lib/ice_fun";
 import { IceUser } from "@/types/user";
 import config from "../../../config.json";
+import { editUserBag } from "@lib/chat_fun";
 export default [
   {
     match: [/^小冰 背包$/],
@@ -100,33 +101,3 @@ export default [
     enable: true,
   },
 ];
-export async function editUserBag(data: any, user?: any) {
-  let cb = { code: 0, msg: "成功" };
-  const uBag = JSON.parse(user.bag ?? "[]");
-  if (uBag.length == 0) {
-    if (data.num < 0) {
-      return { code: 1, msg: "你还没有该物品" };
-    }
-    uBag.push({ name: data.item, num: data.num });
-  } else {
-    let hasItem: boolean = false;
-    uBag.forEach((i: any) => {
-      if (i.name == data.item) {
-        hasItem = true;
-        if (i.num + data.num < 0) {
-          cb = { code: 1, msg: "物品数量不足" };
-        } else {
-          i.num += data.num;
-          cb = { code: 0, msg: "成功" };
-        }
-      }
-    });
-    if (!hasItem) {
-      if (data.num < 0) return { code: 1, msg: "你还没有该物品" };
-      uBag.push({ name: data.item, num: data.num });
-    }
-    user.bag = JSON.stringify(uBag);
-    await updateUser(user);
-  }
-  return cb;
-}

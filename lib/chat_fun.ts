@@ -1,6 +1,7 @@
 import axios from "axios";
 import city from "../city.json";
 import config from "../config.json";
+import { updateUser } from "./ice_fun";
 export async function music163(msg: string) {
   try {
     const res = await axios({
@@ -46,7 +47,6 @@ export const getTianqi = async function (msg: string): Promise<string> {
       resolve("你查询了一个寂寞~ \n 天气指令：小冰 地点[时间]天气");
     }
     const vals = city.find((e) => e.addr.indexOf(adr) > -1);
-    console.log(vals);
     if (vals == null) {
       resolve(`未查询到地点：${adr}`);
     } else {
@@ -90,3 +90,34 @@ export const getTianqi = async function (msg: string): Promise<string> {
     }
   });
 };
+
+export async function editUserBag(data: any, user?: any) {
+  let cb = { code: 0, msg: "成功" };
+  const uBag = JSON.parse(user.bag ?? "[]");
+  if (uBag.length == 0) {
+    if (data.num < 0) {
+      return { code: 1, msg: "你还没有该物品" };
+    }
+    uBag.push({ name: data.item, num: data.num });
+  } else {
+    let hasItem: boolean = false;
+    uBag.forEach((i: any) => {
+      if (i.name == data.item) {
+        hasItem = true;
+        if (i.num + data.num < 0) {
+          cb = { code: 1, msg: "物品数量不足" };
+        } else {
+          i.num += data.num;
+          cb = { code: 0, msg: "成功" };
+        }
+      }
+    });
+    if (!hasItem) {
+      if (data.num < 0) return { code: 1, msg: "你还没有该物品" };
+      uBag.push({ name: data.item, num: data.num });
+    }
+    user.bag = JSON.stringify(uBag);
+    await updateUser(user);
+  }
+  return cb;
+}
