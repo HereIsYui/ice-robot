@@ -1,7 +1,5 @@
 import Fishpi, { ChatMsg, FingerTo, RedPacketType } from "fishpi";
-import { timeout } from "@/config.json";
 import { getUser, updateUser } from "@lib/ice_fun";
-import { IceUser } from "@/types/user";
 import config from "../../../config.json";
 import { editUserBag } from "@lib/chat_fun";
 export default [

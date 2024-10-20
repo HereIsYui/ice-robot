@@ -43,4 +43,8 @@ export default {
 
     Schedule.load(fishpi);
   },
+
+  async chatRoomSend(msg: string) {
+    await fishpi.chatroom.send(msg);
+  }
 };
