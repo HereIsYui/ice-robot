@@ -1,10 +1,11 @@
 import { getUser, updateUser } from '@lib/ice_fun';
 import express from 'express';
 import chat from '@/src/chat';
+import { jwt } from './jwt';
 
 export const apiRouter = express.Router();
 
-apiRouter.get('/GetUserIntimacy', async (req, res) => {
+apiRouter.get('/GetUserIntimacy', jwt, async (req, res) => {
     let uid = req.query.uid ?? '';
     if (!uid) {
         res.status(400).send({ message: 'uid is required' })
@@ -13,7 +14,7 @@ apiRouter.get('/GetUserIntimacy', async (req, res) => {
     res.send({ code: 0, data: { uId: uid, user: user?.user ?? '', intimacy: user?.intimacy ?? 0 }, msg: "success" });
 })
 
-apiRouter.get('/bribe', async (req, res) => {
+apiRouter.get('/bribe', jwt, async (req, res) => {
     let uid = req.query.uid ?? '';
     let item = req.query.item ?? '';
     let num = parseInt(req.query.num?.toString() ?? "0");
