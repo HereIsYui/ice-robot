@@ -37,14 +37,15 @@ export default [
         cb = "用户名不能为空";
       } else if (await isAdmin(userName)) {
         if (await addAdmin(user)) {
-          cb = `添加成功`;
+          cb = `@${userName} :添加成功`;
         } else {
-          cb = `${user} 已经是管理员了`;
+          cb = `@${userName} :${user} 已经是管理员了`;
         }
       } else {
-        cb = `管理员才可以进行此操作哦`;
+        cb = `@${userName} :管理员才可以进行此操作哦`;
       }
       await fishpi.chatroom.send(cb);
+      return false;
     },
     enable: true,
     priority: 1101,
@@ -58,14 +59,15 @@ export default [
         cb = "用户名不能为空";
       } else if (await isAdmin(userName)) {
         if (await removeAdmin(user)) {
-          cb = `取消成功`;
+          cb = `@${userName} :取消成功`;
         } else {
-          cb = `${user} 不是管理员哦`;
+          cb = `@${userName} :${user} 不是管理员哦`;
         }
       } else {
-        cb = `管理员才可以进行此操作哦`;
+        cb = `@${userName} :管理员才可以进行此操作哦`;
       }
       await fishpi.chatroom.send(cb);
+      return false;
     },
     enable: true,
     priority: 1101,
@@ -77,9 +79,8 @@ export default [
       if (await isAdmin(userName)) {
         cb = await getAdmin();
         await fishpi.chatroom.send(cb);
-      } else {
-        return false;
       }
+      return false;
     },
     enable: true,
     priority: 1101,
@@ -100,6 +101,7 @@ export default [
         cb = `管理员才可以进行此操作哦`;
       }
       await fishpi.chatroom.send(cb);
+      return false;
     },
     enable: true,
     priority: 1101,
@@ -120,6 +122,7 @@ export default [
         cb = `管理员才可以进行此操作哦`;
       }
       await fishpi.chatroom.send(cb);
+      return false;
     },
     enable: true,
     priority: 1101,

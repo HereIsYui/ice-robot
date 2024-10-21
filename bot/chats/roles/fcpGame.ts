@@ -24,9 +24,28 @@ export default [
     enable: true,
   },
   {
+    match: [/^fcp:yui@\d{0,9}$/i],
+    exec: async ({ senderUserName }: ChatData, fishpi: Fishpi) => {
+      await fishpi.chat.send(senderUserName, "password wrong");
+      return false;
+    },
+    enable: true,
+  },
+  {
+    match: [/^fcp:[A-Za-z0-9]+@20761024$/i],
+    exec: async ({ senderUserName }: ChatData, fishpi: Fishpi) => {
+      await fishpi.chat.send(senderUserName, "username wrong");
+      return false;
+    },
+    enable: true,
+  },
+  {
     match: [/^fcp:yui@20761024$/i],
     exec: async ({ senderUserName }: ChatData, fishpi: Fishpi) => {
-      await fishpi.chat.send(senderUserName, "Welcome master Yui! You have successfully logged in. \n Type [fcp:status] to check the status of the converter.");
+      await fishpi.chat.send(
+        senderUserName,
+        "Welcome master Yui! You have successfully logged in. \n Type [fcp:status] to check the status of the converter."
+      );
       return false;
     },
     enable: true,
@@ -95,13 +114,13 @@ export default [
       );
       // 等待500ms
       await new Promise((resolve) => setTimeout(resolve, 500));
-      await fishpi.chat.send(senderUserName, " **你TM还有脸重置我?!** ");
+      await fishpi.chat.send(senderUserName, "你TM还有脸重置我?!");
       // 等待500ms
       await new Promise((resolve) => setTimeout(resolve, 500));
       await fishpi.chat.send(senderUserName, "System shutting down.....................failed.");
       // 等待1s
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      await fishpi.chat.send(senderUserName, "THE KEY WHICH YOU WANT, AT **10,24,l,t px** .CAN HELP YOU.");
+      await fishpi.chat.send(senderUserName, "THE KEY WHICH YOU WANT, AT **l:10,t:24 in px** .CAN HELP YOU");
       return false;
     },
     enable: true,
@@ -124,9 +143,12 @@ export default [
       await fishpi.chat.send(senderUserName, "17%...");
       // 等待1s
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      await fishpi.chat.send(senderUserName, "0%...done with error.");
+      // 等待1s
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       await fishpi.chat.send(
         senderUserName,
-        "0%...done with error. \n You need some help. \n You know, she has a box, may have something you need. \n use **continue** to get the box."
+        " \n You need some help. \n You know, she has a box, may have something you need. \n use **continue** to get the box."
       );
       return false;
     },

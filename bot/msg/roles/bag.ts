@@ -27,6 +27,7 @@ export default [
         }
       }
       await fishpi.chatroom.send(`@${userName} ` + cb);
+      return false;
     },
     enable: true,
   },
@@ -55,6 +56,7 @@ export default [
           break;
       }
       await fishpi.chatroom.send(`@${userName} ` + cb);
+      return false;
     },
     enable: true,
   },
@@ -95,6 +97,7 @@ export default [
           break;
       }
       await fishpi.chatroom.send(`@${userName} ` + cb);
+      return false;
     },
     enable: true,
   },
