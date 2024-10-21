@@ -1,6 +1,6 @@
 import Fishpi, { ChatData, FingerTo } from "fishpi";
 import config from "../../../config.json";
-import { getUser, updateUser } from "@lib/ice_fun";
+import { getBankUser, getUser, updateBankUser, updateUser } from "@lib/ice_fun";
 import { setKey } from "@lib/redis";
 
 export default [
@@ -14,16 +14,16 @@ export default [
       }
       await fishpi.chat.send(senderUserName, `交易中...请稍后....`);
       const { userPoint, userNo } = await fishpi.user(senderUserName);
-      const user = await getUser(fromId, senderUserName);
+      const user = await getBankUser(fromId);
       if (userPoint - point >= 0) {
         let no = userNo.toString() + new Date().getTime().toString();
         let memo = "【IceBank-交易通知】交易单号:" + no + ";PS:交易记录只保存7天";
         await FingerTo(config.keys.point).editUserPoints(senderUserName, -point, memo);
         await FingerTo(config.keys.point).editUserPoints("xiaoIce", point, memo);
         user.point = (user.point ?? 0) + point;
-        await updateUser(user);
+        await updateBankUser(user);
         await setKey(
-          `BANK:${no}`,
+          `BANK:IN:${no}`,
           {
             point: point,
             uId: user.uId,
@@ -51,7 +51,7 @@ export default [
         return false;
       }
       await fishpi.chat.send(senderUserName, `交易中...请稍后....`);
-      const user = await getUser(fromId, senderUserName);
+      const user = await getBankUser(fromId);
       const { userNo } = await fishpi.user(senderUserName);
       if (user.point - point >= 0) {
         let no = userNo.toString() + new Date().getTime().toString();
@@ -59,9 +59,9 @@ export default [
         await FingerTo(config.keys.point).editUserPoints(senderUserName, point, memo);
         await FingerTo(config.keys.point).editUserPoints("xiaoIce", -point, memo);
         user.point = (user.point ?? 0) - point;
-        await updateUser(user);
+        await updateBankUser(user);
         await setKey(
-          `BANK:${no}`,
+          `BANK:OUT:${no}`,
           {
             point: point,
             uId: user.uId,
@@ -83,7 +83,7 @@ export default [
   {
     match: [/(账户|余额)/],
     exec: async ({ senderUserName, markdown, fromId }: ChatData, fishpi: Fishpi) => {
-      const user = await getUser(fromId, senderUserName);
+      const user = await getBankUser(fromId);
       await fishpi.chat.send(senderUserName, `当前已存积分:${user.point}`);
       return false;
     },

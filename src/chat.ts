@@ -23,6 +23,7 @@ export default {
   async listen(bots: Robots) {
     console.log("聊天室监听中...");
     fishpi.chatroom.setVia(ClientType.IceNet, "3.0");
+    fishpi.chatroom.send("当当当当,冰冰来喽~");
     // 监听聊天室消息
     fishpi.chatroom.addListener(async ({ msg }) => {
       if (!bots[msg.type]) return;
@@ -46,5 +47,5 @@ export default {
 
   async chatRoomSend(msg: string) {
     await fishpi.chatroom.send(msg);
-  }
+  },
 };

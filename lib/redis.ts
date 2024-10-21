@@ -36,6 +36,13 @@ export const getKey = async (key: string) => {
   }
 };
 
+export const getKeys = async (key: string) => {
+  key = key.toUpperCase();
+  if (!client) await initRedis();
+  const value = await client.keys(key);
+  return value;
+};
+
 export const delKey = async (key: string) => {
   if (!client) await initRedis();
   await client.del(key);

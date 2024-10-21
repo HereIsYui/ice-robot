@@ -17,16 +17,16 @@ export default [
     exec: async ({ senderUserName }: ChatData, fishpi: Fishpi) => {
       await fishpi.chat.send(
         senderUserName,
-        `- Type [fcp:status] to check the status of the converter. \n - Type [fcp:login] to get login information. \n - type [fcp:username@password] to login. \n - Type [fcp:reset] to reset the converter. \n - Type [fcp:reconvery] to recover the converter. \n - Forgot your password? Where did you write it down?`
+        `Type [fcp:login] to get login information. \n Type [fcp:username@password] to login. \n Forgot your password? Where did you write it down?`
       );
       return false;
     },
     enable: true,
   },
   {
-    match: [/^fcp:yui@20761024$/],
+    match: [/^fcp:yui@20761024$/i],
     exec: async ({ senderUserName }: ChatData, fishpi: Fishpi) => {
-      await fishpi.chat.send(senderUserName, "Welcome master Yui! You have successfully logged in.");
+      await fishpi.chat.send(senderUserName, "Welcome master Yui! You have successfully logged in. \n Type [fcp:status] to check the status of the converter.");
       return false;
     },
     enable: true,
