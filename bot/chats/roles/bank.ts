@@ -14,13 +14,14 @@ export default [
       }
       await fishpi.chat.send(senderUserName, `交易中...请稍后....`);
       const { userPoint, userNo } = await fishpi.user(senderUserName);
+      const uPoint = parseInt(userPoint.toString());
       const user = await getBankUser(fromId);
-      if (userPoint - point >= 0) {
+      if (uPoint - point >= 0) {
         let no = userNo.toString() + new Date().getTime().toString();
         let memo = "【IceBank-交易通知】交易单号:" + no + ";PS:交易记录只保存7天";
         await FingerTo(config.keys.point).editUserPoints(senderUserName, -point, memo);
         await FingerTo(config.keys.point).editUserPoints("xiaoIce", point, memo);
-        user.point = (user.point ?? 0) + point;
+        user.point = (parseInt(user.point) ?? 0) + point;
         await updateBankUser(user);
         await setKey(
           `BANK:IN:${no}`,
@@ -53,12 +54,12 @@ export default [
       await fishpi.chat.send(senderUserName, `交易中...请稍后....`);
       const user = await getBankUser(fromId);
       const { userNo } = await fishpi.user(senderUserName);
-      if (user.point - point >= 0) {
+      if (parseInt(user.point) - point >= 0) {
         let no = userNo.toString() + new Date().getTime().toString();
         let memo = "【IceBank-交易通知】交易单号:" + no + ";PS:交易记录只保存7天";
         await FingerTo(config.keys.point).editUserPoints(senderUserName, point, memo);
         await FingerTo(config.keys.point).editUserPoints("xiaoIce", -point, memo);
-        user.point = (user.point ?? 0) - point;
+        user.point = (parseInt(user.point) ?? 0) - point;
         await updateBankUser(user);
         await setKey(
           `BANK:OUT:${no}`,

@@ -1,4 +1,4 @@
-import Fishpi, { ChatMsg } from "fishpi";
+import Fishpi, { ChatMsg, FingerTo } from "fishpi";
 import { addAdmin, addUserIntimacy, getAdmin, getUser, isAdmin, removeAdmin, updateUser } from "@lib/ice_fun";
 import axios from "axios";
 import config from "../../../config.json";
@@ -120,6 +120,31 @@ export default [
         cb = "鸽鸽,等等我!";
       } else {
         cb = `管理员才可以进行此操作哦`;
+      }
+      await fishpi.chatroom.send(cb);
+      return false;
+    },
+    enable: true,
+    priority: 1101,
+  },
+  {
+    match: [/^补偿 .{5,20}/],
+    exec: async ({ userName, md }: ChatMsg, fishpi: Fishpi) => {
+      let cb = "";
+      try {
+        let mdStr = md.split(" ")[1];
+        let mdArr = mdStr.split("_");
+        let user = mdArr[0];
+        let num = parseInt(mdArr[1]);
+        let memo = mdArr[2] ?? `${userName} 操作积分补偿`;
+        await FingerTo(config.keys.point).editUserPoints(user, num, memo);
+        if (await isAdmin(userName)) {
+          cb = `@${userName} 已补偿 \`${user}\` \`${num}\`积分`;
+        } else {
+          cb = `管理员才可以进行此操作哦`;
+        }
+      } catch (e) {
+        cb = "参数错误";
       }
       await fishpi.chatroom.send(cb);
       return false;
