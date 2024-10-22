@@ -23,7 +23,6 @@ export default {
   async listen(bots: Robots) {
     console.log("聊天室监听中...");
     fishpi.chatroom.setVia(ClientType.IceNet, "3.0");
-    fishpi.chatroom.send("当当当当,冰冰来喽~");
     // 监听聊天室消息
     fishpi.chatroom.addListener(async ({ msg }) => {
       if (!bots[msg.type]) return;
@@ -33,6 +32,8 @@ export default {
 
       exec(msg, fishpi);
     });
+
+    fishpi.chatroom.send("当当当当,冰冰来喽~");
 
     fishpi.chat.addListener(async ({ msg }) => {
       const chat = msg as NoticeMsg;
@@ -45,7 +46,13 @@ export default {
     Schedule.load(fishpi);
   },
 
-  async chatRoomSend(msg: string) {
-    await fishpi.chatroom.send(msg);
+  async chatRoomSend(msg: string, isPre: boolean = false) {
+    if(isPre){
+      await fishpi.chatroom.send(msg);
+    }else{
+      msg += `<div id="IceNet-${new Date().getTime()}"></div>`;
+      await fishpi.chatroom.send(msg);
+    }
+    
   },
 };
