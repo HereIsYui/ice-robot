@@ -26,7 +26,7 @@ export default [
   {
     match: [/^fcp:yui@\d{0,9}$/i],
     exec: async ({ senderUserName, markdown }: ChatData, fishpi: Fishpi) => {
-      if (markdown == "fcp:yui@20761024") {
+      if (markdown.toUpperCase() == "fcp:yui@20761024".toUpperCase()) {
         await fishpi.chat.send(
           senderUserName,
           "Welcome master Yui! You have successfully logged in. \n Type [fcp:status] to check the status of the converter."
@@ -41,7 +41,7 @@ export default [
   {
     match: [/^fcp:[A-Za-z0-9]+@20761024$/i],
     exec: async ({ senderUserName, markdown }: ChatData, fishpi: Fishpi) => {
-      if (markdown == "fcp:yui@20761024") {
+      if (markdown.toUpperCase() == "fcp:yui@20761024".toUpperCase()) {
         await fishpi.chat.send(
           senderUserName,
           "Welcome master Yui! You have successfully logged in. \n Type [fcp:status] to check the status of the converter."
@@ -113,7 +113,7 @@ export default [
       await new Promise((resolve) => setTimeout(resolve, 500));
       await fishpi.chat.send(
         senderUserName,
-        " **还有多久下班？** \n **今天能赚多少钱？** \n  **有没有好好努力工作？** \n  **给我回去好好看看** \n  **不就是个程序员！过节了不起？** "
+        " **还有多久下班？** \n **今天能赚多少钱？** \n  有没有好好努力工作？ \n  给我回去好好看看 \n  不就是个程序员！过节了不起？ "
       );
       // 等待500ms
       await new Promise((resolve) => setTimeout(resolve, 500));
