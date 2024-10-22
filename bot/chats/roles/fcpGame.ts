@@ -25,27 +25,30 @@ export default [
   },
   {
     match: [/^fcp:yui@\d{0,9}$/i],
-    exec: async ({ senderUserName }: ChatData, fishpi: Fishpi) => {
-      await fishpi.chat.send(senderUserName, "password wrong");
+    exec: async ({ senderUserName, markdown }: ChatData, fishpi: Fishpi) => {
+      if (markdown == "fcp:yui@20761024") {
+        await fishpi.chat.send(
+          senderUserName,
+          "Welcome master Yui! You have successfully logged in. \n Type [fcp:status] to check the status of the converter."
+        );
+      } else {
+        await fishpi.chat.send(senderUserName, "password wrong");
+      }
       return false;
     },
     enable: true,
   },
   {
     match: [/^fcp:[A-Za-z0-9]+@20761024$/i],
-    exec: async ({ senderUserName }: ChatData, fishpi: Fishpi) => {
-      await fishpi.chat.send(senderUserName, "username wrong");
-      return false;
-    },
-    enable: true,
-  },
-  {
-    match: [/^fcp:yui@20761024$/i],
-    exec: async ({ senderUserName }: ChatData, fishpi: Fishpi) => {
-      await fishpi.chat.send(
-        senderUserName,
-        "Welcome master Yui! You have successfully logged in. \n Type [fcp:status] to check the status of the converter."
-      );
+    exec: async ({ senderUserName, markdown }: ChatData, fishpi: Fishpi) => {
+      if (markdown == "fcp:yui@20761024") {
+        await fishpi.chat.send(
+          senderUserName,
+          "Welcome master Yui! You have successfully logged in. \n Type [fcp:status] to check the status of the converter."
+        );
+      } else {
+        await fishpi.chat.send(senderUserName, "username wrong");
+      }
       return false;
     },
     enable: true,

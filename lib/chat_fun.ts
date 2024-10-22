@@ -117,7 +117,7 @@ export async function editUserBag(data: any, user?: any) {
       uBag.push({ name: data.item, num: data.num });
     }
     user.bag = JSON.stringify(uBag);
-    await updateUser(user);
   }
+  await updateUser(user);
   return cb;
 }

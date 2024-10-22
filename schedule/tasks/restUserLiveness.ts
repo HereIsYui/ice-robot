@@ -19,8 +19,8 @@ export default {
       user.last_liveness = 0;
       user.today_intimacy = 0;
       await updateUser(user);
-      await fishpi.chat.send("Yui", "更新用户信息成功!");
     }
+    await fishpi.chat.send("Yui", "更新用户信息成功!");
   },
   /**
    * 是否启用

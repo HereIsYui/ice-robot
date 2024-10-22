@@ -93,6 +93,22 @@ export default [
     enable: true,
   },
   {
+    match: [/补发 .{0,10}$/],
+    exec: async ({ userName, md, userOId }: ChatMsg, fishpi: Fishpi) => {
+      if (await isAdmin(userName)) {
+        let itemStr = md.trim().split(" ")[1];
+        let users = itemStr.split("_")[0];
+        let item = itemStr.split("_")[1];
+        const fishpiUser = await fishpi.user(users);
+        const user = await getUser(fishpiUser.oId);
+        await editUserBag({ item, num: 1 }, user);
+        await fishpi.chatroom.send(`@${userName} 给\`${users}\` 补发了${item}`);
+      }
+      return false;
+    },
+    enable: true,
+  },
+  {
     match: [/^点歌 .{0,10}$/],
     exec: async ({ userName, md }: ChatMsg, fishpi: Fishpi) => {
       let cb = await music163(md.trim().split(" ")[1]);
