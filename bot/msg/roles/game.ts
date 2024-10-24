@@ -1,16 +1,49 @@
-import Fishpi, { ChatMsg, FingerTo } from "fishpi";
+import Fishpi, { ChatMsg, FingerTo, RedPacket, RedPacketType } from "fishpi";
 import { getAdmin, getUser, isAdmin, updateUser } from "@lib/ice_fun";
 import { editUserBag, getTianqi, music163 } from "@lib/chat_fun";
 import config from "../../../config.json";
+import { getKey, setKey } from "@lib/redis";
 
 export default [
   {
     match: [/(来个|发个)红包/],
-    exec: async ({ userName }: ChatMsg, fishpi: Fishpi) => {
-      let adminList = await getAdmin();
-      let nameList = ["阿达", "老王", "鸽鸽", "午安", ...adminList.split(",")];
+    exec: async ({ userName, userOId }: ChatMsg, fishpi: Fishpi) => {
+      let nameList = ["阿达", "老王", "鸽鸽", "午安", "勾月", "Yui", "跳跳", "墨夏", "柴柴", "哀酱", userName];
       let key = nameList[Math.floor(Math.random() * nameList.length)];
-      await fishpi.chatroom.send(`@${userName} 不听不听🙉,${key}念经`);
+      let isSend = await getKey(`redpack:${userOId}`);
+      if (await isAdmin(userName)) {
+        if (isSend == true) {
+          await fishpi.chatroom.send(`@${userName} :已经发过红包了哦`);
+        } else {
+          await setKey(`redpack:${userOId}`, true, 86400);
+          var redpacket: RedPacket = {
+            type: RedPacketType.Specify,
+            money: Math.floor(Math.random() * 64 + 32),
+            count: 1,
+            msg: "这是小冰的私房钱哦",
+            recivers: [userName],
+          };
+          await fishpi.chatroom.redpacket.send(redpacket);
+        }
+      } else {
+        let random = Math.random();
+        if (isSend == true) {
+          await fishpi.chatroom.send(`@${userName} :已经发过红包了哦`);
+        } else {
+          if (random < 0.01) {
+            await setKey(`redpack:${userOId}`, true, 86400);
+            var redpacket: RedPacket = {
+              type: RedPacketType.Specify,
+              money: Math.floor(Math.random() * 32 + 32),
+              count: 1,
+              msg: "这是偷偷给你的哦,不要告诉别人",
+              recivers: [userName],
+            };
+          } else {
+            await fishpi.chatroom.send(`@${userName} 不听不听🙉,${key}念经`);
+          }
+        }
+      }
       return false;
     },
     enable: true,

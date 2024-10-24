@@ -73,7 +73,7 @@ export default [
     priority: 1101,
   },
   {
-    match: [/管理列表/],
+    match: [/^管理列表/],
     exec: async ({ userName, md }: ChatMsg, fishpi: Fishpi) => {
       let cb = "";
       if (await isAdmin(userName)) {
@@ -86,7 +86,7 @@ export default [
     priority: 1101,
   },
   {
-    match: [/^冰启鸽/],
+    match: [/^冰启凌/],
     exec: async ({ userName, md }: ChatMsg, fishpi: Fishpi) => {
       let cb = "";
       if (await isAdmin(userName)) {
@@ -107,7 +107,7 @@ export default [
     priority: 1101,
   },
   {
-    match: [/^冰启凌/],
+    match: [/^冰启鸽/],
     exec: async ({ userName, md }: ChatMsg, fishpi: Fishpi) => {
       let cb = "";
       if (await isAdmin(userName)) {
