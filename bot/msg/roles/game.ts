@@ -26,11 +26,11 @@ export default [
           await fishpi.chatroom.redpacket.send(redpacket);
         }
       } else {
-        let random = Math.random();
+        let random = Math.floor(Math.random() * 99 + 1);
         if (isSend == true) {
           await fishpi.chatroom.send(`@${userName} :已经发过红包了哦`);
         } else {
-          if (random < 0.01) {
+          if (random < 5) {
             await setKey(`redpack:${userOId}`, true, 86400);
             var redpacket: RedPacket = {
               type: RedPacketType.Specify,
@@ -39,8 +39,21 @@ export default [
               msg: "这是偷偷给你的哦,不要告诉别人",
               recivers: [userName],
             };
+          } else if (random == 6) {
+            await setKey(`redpack:${userOId}`, true, 86400);
+            var redpacket: RedPacket = {
+              type: RedPacketType.Specify,
+              money: Math.floor(Math.random() * 64 + 64),
+              count: 1,
+              msg: "🎉恭喜触发超级大红包~偷偷领哦",
+              recivers: [userName],
+            };
+          } else if (random < 10) {
+            await setKey(`redpack:${userOId}`, true, 86400);
+            await FingerTo(config.keys.point).editUserPoints(userName, -5, "节操值爆表,扣除医药费~");
+            await FingerTo(config.keys.point).editUserPoints("xiaoIce", 5, `${userName} 的节操值修复费用`);
           } else {
-            await fishpi.chatroom.send(`@${userName} 不听不听🙉,${key}念经`);
+            await fishpi.chatroom.send(`@${userName} 不听不听🙉,${key}念经 \n > 本次节操:${random}`);
           }
         }
       }
