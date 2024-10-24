@@ -24,7 +24,7 @@ export default {
     console.log("聊天室监听中...");
     fishpi.chatroom.setVia(ClientType.IceNet, "3.0");
     // 监听聊天室消息
-    fishpi.chatroom.addListener(async ({ msg }) => {
+    await fishpi.chatroom.addListener(async ({ msg }) => {
       if (!bots[msg.type]) return;
 
       const { exec } = bots[msg.type];

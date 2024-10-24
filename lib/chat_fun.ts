@@ -115,9 +115,9 @@ export async function editUserBag(data: any, user?: any) {
     if (!hasItem) {
       if (data.num < 0) return { code: 1, msg: "你还没有该物品" };
       uBag.push({ name: data.item, num: data.num });
-    }
-    user.bag = JSON.stringify(uBag);
+    }  
   }
+  user.bag = JSON.stringify(uBag);
   await updateUser(user);
   return cb;
 }

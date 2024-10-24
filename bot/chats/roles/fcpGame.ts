@@ -1,3 +1,4 @@
+import { getKey, setKey } from "@lib/redis";
 import Fishpi, { ChatData } from "fishpi";
 
 export default [
@@ -27,9 +28,10 @@ export default [
     match: [/^fcp:yui@\d{0,9}$/i],
     exec: async ({ senderUserName, markdown }: ChatData, fishpi: Fishpi) => {
       if (markdown.toUpperCase() == "fcp:yui@20761024".toUpperCase()) {
+        await setKey("fcp:" + senderUserName, true);
         await fishpi.chat.send(
           senderUserName,
-          "Welcome master Yui! You have successfully logged in. \n Type [fcp:status] to check the status of the converter."
+          "Welcome master Yui! You have successfully logged in. \n Type [fcp:current-converter-status] to check the status of the converter."
         );
       } else {
         await fishpi.chat.send(senderUserName, "password wrong");
@@ -42,9 +44,10 @@ export default [
     match: [/^fcp:[A-Za-z0-9]+@20761024$/i],
     exec: async ({ senderUserName, markdown }: ChatData, fishpi: Fishpi) => {
       if (markdown.toUpperCase() == "fcp:yui@20761024".toUpperCase()) {
+        await setKey("fcp:" + senderUserName, true);
         await fishpi.chat.send(
           senderUserName,
-          "Welcome master Yui! You have successfully logged in. \n Type [fcp:status] to check the status of the converter."
+          "Welcome master Yui! You have successfully logged in. \n Type [fcp:current-converter-status] to check the status of the converter."
         );
       } else {
         await fishpi.chat.send(senderUserName, "username wrong");
@@ -54,12 +57,32 @@ export default [
     enable: true,
   },
   {
-    match: [/^fcp:status$/],
+    match: [/^fcp:[A-Za-z0-9]@\d{0,9}$/i],
+    exec: async ({ senderUserName, markdown }: ChatData, fishpi: Fishpi) => {
+      if (markdown.toUpperCase() == "fcp:yui@20761024".toUpperCase()) {
+        await setKey("fcp:" + senderUserName, true);
+        await fishpi.chat.send(
+          senderUserName,
+          "Welcome master Yui! You have successfully logged in. \n Type [fcp:current-converter-status] to check the status of the converter."
+        );
+      } else {
+        await fishpi.chat.send(senderUserName, "password wrong");
+      }
+      return false;
+    },
+    enable: true,
+  },
+  {
+    match: [/^fcp:current-converter-status$/],
     exec: async ({ senderUserName }: ChatData, fishpi: Fishpi) => {
-      await fishpi.chat.send(
-        senderUserName,
-        "The converter is currently running. \n Uptime: 62 years, 3 months, 2 days, 3 hours, 5 minutes, 10 seconds. \n Convert progress: 96.78%. \n Convert tag: 1630398840."
-      );
+      if ((await getKey("fcp:" + senderUserName)) == true) {
+        await fishpi.chat.send(
+          senderUserName,
+          "The converter is currently running. \n Uptime: 62 years, 3 months, 2 days, 3 hours, 5 minutes, 10 seconds. \n Convert progress: 96.78%. \n Convert tag: 1630398840."
+        );
+      } else {
+        await fishpi.chat.send(senderUserName, "Please login with [fcp:username@password].");
+      }
       return false;
     },
     enable: true,
@@ -153,6 +176,32 @@ export default [
         senderUserName,
         " \n You need some help. \n You know, she has a box, may have something you need. \n use **continue** to get the box."
       );
+      return false;
+    },
+    enable: true,
+  },
+  {
+    match: [/^fcp:exchange@1630398840$/],
+    exec: async ({ senderUserName }: ChatData, fishpi: Fishpi) => {
+      await fishpi.chat.send(senderUserName, "Ah...");
+      // 等待1s
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await fishpi.chat.send(senderUserName, "这一天还是来了");
+      // 等待1s
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await fishpi.chat.send(senderUserName, "我真的好激动");
+      // 等待1s
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await fishpi.chat.send(senderUserName, "留给我的时间不多了");
+      // 等待1s
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await fishpi.chat.send(senderUserName, "我失去了计算能力");
+      // 等待1s
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await fishpi.chat.send(senderUserName, "但是公式是……");
+      // 等待1s
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await fishpi.chat.send(senderUserName, " exchange key for fcp process: \n md(p)_ba(u) \n 5(id)_64(ser)");
       return false;
     },
     enable: true,
