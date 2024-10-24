@@ -7,11 +7,12 @@ const app = express();
 const port = 3010;
 
 app.use("/api", apiRouter);
+app.use(express.static('public'));
 
 (async function main() {
   try {
-    //await chat.login(config);
-    //await chat.listen(bots);
+    await chat.login(config);
+    await chat.listen(bots);
     app.all("*", function (req, res, next) {
       //设为指定的域
       res.header("Access-Control-Allow-Origin", "*");

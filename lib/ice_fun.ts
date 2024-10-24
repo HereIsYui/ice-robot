@@ -76,10 +76,11 @@ export async function updateBankUser(user: any) {
 export async function addUserIntimacy(oId: string, intimacy: number = 1, save: boolean = true) {
   const user = await getUser(oId);
   if (save) user.today_intimacy = (user.today_intimacy ?? 0) + 1;
+  user.intimacy = parseInt(user.intimacy) ?? 0;
   if ((user.today_intimacy ?? 0) < 20 && intimacy == 1) {
-    user.intimacy = (user.intimacy ?? 0) + 1;
+    user.intimacy += 1;
   } else {
-    user.intimacy = (user.intimacy ?? 0) + intimacy;
+    user.intimacy += intimacy;
   }
   await setKey(`uid:${oId}`, user);
   return true;
@@ -87,7 +88,7 @@ export async function addUserIntimacy(oId: string, intimacy: number = 1, save: b
 
 export async function reduceUserIntimacy(oId: string, intimacy: number = 1) {
   const user = await getUser(oId);
-  user.intimacy = (user.intimacy ?? 0) - intimacy;
+  user.intimacy = (parseInt(user.intimacy) ?? 0) - intimacy;
   await setKey(`uid:${oId}`, user);
   return true;
 }
