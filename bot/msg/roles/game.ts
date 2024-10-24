@@ -3,6 +3,7 @@ import { getAdmin, getUser, isAdmin, updateUser } from "@lib/ice_fun";
 import { editUserBag, getTianqi, music163 } from "@lib/chat_fun";
 import config from "../../../config.json";
 import { getKey, setKey } from "@lib/redis";
+import chat from "@/src/chat";
 
 export default [
   {
@@ -13,7 +14,7 @@ export default [
       let isSend = await getKey(`redpack:${userOId}`);
       if (await isAdmin(userName)) {
         if (isSend == true) {
-          await fishpi.chatroom.send(`@${userName} :已经发过红包了哦`);
+          await chat.chatRoomSend(`@${userName} :已经发过红包了哦`);
         } else {
           await setKey(`redpack:${userOId}`, true, 86400);
           var redpacket: RedPacket = {
@@ -27,7 +28,7 @@ export default [
         }
       } else {
         if (isSend == true) {
-          await fishpi.chatroom.send(`@${userName} :已经发过红包了哦`);
+          await chat.chatRoomSend(`@${userName} :已经发过红包了哦`);
         } else {
           let random = Math.floor(Math.random() * 99 + 1);
           if ([1, 11, 23, 55, 66, 88, 99].includes(random)) {
@@ -53,9 +54,9 @@ export default [
           } else if (random < 15 || random > 90) {
             await FingerTo(config.keys.point).editUserPoints(userName, -10, "节操值爆表,扣除医药费~");
             await FingerTo(config.keys.point).editUserPoints("xiaoIce", 10, `${userName} 的节操值修复费用`);
-            await fishpi.chatroom.send(`@${userName} 不听不听🙉,节操值爆表,扣除医药费~`);
+            await chat.chatRoomSend(`@${userName} 不听不听🙉,节操值爆表,扣除医药费~`);
           } else {
-            await fishpi.chatroom.send(`@${userName} 不听不听🙉,${key}念经 \n > 本次节操:${random}`);
+            await chat.chatRoomSend(`@${userName} 不听不听🙉,${key}念经 \n > 本次节操:${random}`);
           }
         }
       }
@@ -67,7 +68,7 @@ export default [
     match: [/亲密度/],
     exec: async ({ userName, userOId }: ChatMsg, fishpi: Fishpi) => {
       const user = await getUser(userOId, userName);
-      await fishpi.chatroom.send(`@${userName} 当前亲密度为: ${user.intimacy ?? 0}:two_hearts: \n > 召唤小冰,送鱼丸鱼翅,红包都可以增加亲密度哦`);
+      await chat.chatRoomSend(`@${userName} 当前亲密度为: ${user.intimacy ?? 0}:two_hearts: \n > 召唤小冰,送鱼丸鱼翅,红包都可以增加亲密度哦`);
       return false;
     },
     enable: true,
@@ -76,9 +77,9 @@ export default [
     match: [/(当前|现在|今日|水多)(吗|少了)?(活跃)?值?$/],
     exec: async ({ userName }: ChatMsg, fishpi: Fishpi) => {
       if (await isAdmin(userName)) {
-        await fishpi.chatroom.send(`凌 活跃`);
+        await chat.chatRoomSend(`凌 活跃`);
       } else {
-        await fishpi.chatroom.send(`凌 活跃  ${userName}`);
+        await chat.chatRoomSend(`凌 活跃  ${userName}`);
       }
       return false;
     },
@@ -88,7 +89,7 @@ export default [
     match: [/^小冰 .*天气/],
     exec: async ({ md }: ChatMsg, fishpi: Fishpi) => {
       let cb = await getTianqi(md.replace("小冰", "").trim());
-      await fishpi.chatroom.send(cb);
+      await chat.chatRoomSend(cb, true);
       return false;
     },
     enable: true,
@@ -101,7 +102,7 @@ export default [
       const user = await getUser(userOId, userName);
       if (user.last_liveness == 1) {
         cb = `@${userName} 小冰今天已经打劫过啦~ \n > 小冰打劫是领取昨日活跃哦, 让小冰帮你领取有概率获得免签卡碎片~`;
-        await fishpi.chatroom.send(cb);
+        await chat.chatRoomSend(cb);
         return false;
       }
       try {
@@ -109,7 +110,7 @@ export default [
       } catch (error) {}
       if (liveness == 0) {
         cb = `@${userName} ` + "今日已经领过活跃啦! 不可以重复领取哦 \n > 小冰打劫是领取昨日活跃哦, 让小冰帮你领取有概率获得免签卡碎片~";
-        await fishpi.chatroom.send(cb);
+        await chat.chatRoomSend(cb);
         return false;
       }
       cb = `@${userName} 小冰打劫回来啦！一共获得了${liveness >= 0 ? liveness + "点积分:credit_card:" : "0点积分, 不要太贪心哦~"}`;
@@ -135,7 +136,7 @@ export default [
       }
       user.last_liveness = 1;
       await updateUser(user);
-      await fishpi.chatroom.send(cb);
+      await chat.chatRoomSend(cb);
       return false;
     },
     enable: true,
@@ -150,7 +151,7 @@ export default [
         const fishpiUser = await fishpi.user(users);
         const user = await getUser(fishpiUser.oId);
         await editUserBag({ item, num: 1 }, user);
-        await fishpi.chatroom.send(`@${userName} 给\`${users}\` 补发了${item}`);
+        await chat.chatRoomSend(`@${userName} 给\`${users}\` 补发了${item}`);
       }
       return false;
     },
@@ -160,7 +161,7 @@ export default [
     match: [/^点歌 .{0,10}$/],
     exec: async ({ userName, md }: ChatMsg, fishpi: Fishpi) => {
       let cb = await music163(md.trim().split(" ")[1]);
-      await fishpi.chatroom.send(cb);
+      await chat.chatRoomSend(cb, true);
       return false;
     },
     enable: true,
@@ -170,7 +171,7 @@ export default [
     match: [/(56c0f695|乌拉)/],
     exec: async ({ userName, md }: ChatMsg, fishpi: Fishpi) => {
       if (!["sevenSummer", "xiaoIce", "fishpi"].includes(userName)) {
-        await fishpi.chatroom.send("![乌拉乌拉](https://pwl.stackoverflow.wiki/2022/03/image-56c0f695.png)");
+        await chat.chatRoomSend("![乌拉乌拉](https://pwl.stackoverflow.wiki/2022/03/image-56c0f695.png)");
       }
       return false;
     },
@@ -183,7 +184,7 @@ export default [
       const link =
         Buffer.from("aHR0cHM6Ly9kaWN0LnlvdWRhby5jb20vZGljdHZvaWNlP2xlPXpoJmF1ZGlvPQ==", "base64") + encodeURIComponent(md.replace(/^TTS|^朗读/i, ""));
       const cb = `@${userName} 那你可就听好了<br><audio src='${link}' controls/>`;
-      await fishpi.chatroom.send(cb);
+      await chat.chatRoomSend(cb);
       return false;
     },
     enable: true,

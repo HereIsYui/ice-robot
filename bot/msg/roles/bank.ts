@@ -3,13 +3,14 @@ import { timeout } from "@/config.json";
 import { getBankUser, getUser, updateBankUser, updateUser } from "@lib/ice_fun";
 import { setKey } from "@lib/redis";
 import config from "../../../config.json";
+import chat from "@/src/chat";
 
 export default [
   {
     match: [/(账户|余额)/],
     exec: async ({ userName, userOId }: ChatMsg, fishpi: Fishpi) => {
       const user = await getBankUser(userOId);
-      await fishpi.chatroom.send(
+      await chat.chatRoomSend(
         `@${userName} 您的账户余额为:${user.point.toString()}` //.replaceAll(/\d/gi, "*")} \n > 为了保护您的隐私,聊天室内仅展示位数,请在私聊中查询
       );
       return false;
@@ -21,7 +22,7 @@ export default [
     exec: async ({ userName, md, userOId }: ChatMsg, fishpi: Fishpi) => {
       const point = parseInt(md.replace("小冰", "").trim().split(" ")[1]);
       if (point <= 0) {
-        await fishpi.chatroom.send(`@${userName} 交易金额不合法`);
+        await chat.chatRoomSend(`@${userName} 交易金额不合法`);
         return false;
       }
       console.log(point);
@@ -46,9 +47,9 @@ export default [
           },
           604800
         );
-        await fishpi.chatroom.send(`@${userName} 成功存 ${point}积分,当前积分:${user.point} \n > ${memo}`);
+        await chat.chatRoomSend(`@${userName} 成功存 ${point}积分,当前积分:${user.point} \n > ${memo}`);
       } else {
-        await fishpi.chatroom.send(`@${userName} 积分不足`);
+        await chat.chatRoomSend(`@${userName} 积分不足`);
         return false;
       }
       return false;
@@ -60,7 +61,7 @@ export default [
     exec: async ({ userName, md, userOId }: ChatMsg, fishpi: Fishpi) => {
       const point = parseInt(md.replace("小冰", "").trim().split(" ")[1]);
       if (point <= 0) {
-        await fishpi.chatroom.send(`@${userName} 金额不合法`);
+        await chat.chatRoomSend(`@${userName} 金额不合法`);
         return false;
       }
       const user = await getBankUser(userOId);
@@ -83,9 +84,9 @@ export default [
           },
           604800
         );
-        await fishpi.chatroom.send(`@${userName} 成功取 ${point}积分,当前积分:${user.point} \n > ${memo}`);
+        await chat.chatRoomSend(`@${userName} 成功取 ${point}积分,当前积分:${user.point} \n > ${memo}`);
       } else {
-        await fishpi.chatroom.send(`@${userName} 积分不足`);
+        await chat.chatRoomSend(`@${userName} 积分不足`);
         return false;
       }
       return false;

@@ -2,6 +2,7 @@ import Fishpi, { ChatMsg, FingerTo, RedPacketType } from "fishpi";
 import { getUser, updateUser } from "@lib/ice_fun";
 import config from "../../../config.json";
 import { editUserBag } from "@lib/chat_fun";
+import chat from "@/src/chat";
 export default [
   {
     match: [/^小冰 背包$/],
@@ -26,7 +27,7 @@ export default [
           if (fishpiBag.data.metalTicket) cb += `\n \`摸鱼派一周年纪念勋章领取券\`*${fishpiBag.data.metalTicket}个`;
         }
       }
-      await fishpi.chatroom.send(`@${userName} ` + cb);
+      await chat.chatRoomSend(`@${userName} ` + cb);
       return false;
     },
     enable: true,
@@ -55,7 +56,7 @@ export default [
         default:
           break;
       }
-      await fishpi.chatroom.send(`@${userName} ` + cb);
+      await chat.chatRoomSend(`@${userName} ` + cb);
       return false;
     },
     enable: true,
@@ -96,7 +97,7 @@ export default [
           cb = "没有该物品哦";
           break;
       }
-      await fishpi.chatroom.send(`@${userName} ` + cb);
+      await chat.chatRoomSend(`@${userName} ` + cb);
       return false;
     },
     enable: true,

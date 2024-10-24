@@ -2,6 +2,7 @@ import Fishpi, { ChatMsg, FingerTo } from "fishpi";
 import { addAdmin, addUserIntimacy, getAdmin, getUser, isAdmin, removeAdmin, updateUser } from "@lib/ice_fun";
 import axios from "axios";
 import config from "../../../config.json";
+import chat from "@/src/chat";
 
 export default [
   {
@@ -44,7 +45,7 @@ export default [
       } else {
         cb = `@${userName} :管理员才可以进行此操作哦`;
       }
-      await fishpi.chatroom.send(cb);
+      await chat.chatRoomSend(cb);
       return false;
     },
     enable: true,
@@ -66,7 +67,7 @@ export default [
       } else {
         cb = `@${userName} :管理员才可以进行此操作哦`;
       }
-      await fishpi.chatroom.send(cb);
+      await chat.chatRoomSend(cb);
       return false;
     },
     enable: true,
@@ -78,7 +79,7 @@ export default [
       let cb = "";
       if (await isAdmin(userName)) {
         cb = await getAdmin();
-        await fishpi.chatroom.send(cb);
+        await chat.chatRoomSend(cb);
       }
       return false;
     },
@@ -100,7 +101,7 @@ export default [
       } else {
         cb = `管理员才可以进行此操作哦`;
       }
-      await fishpi.chatroom.send(cb);
+      await chat.chatRoomSend(cb);
       return false;
     },
     enable: true,
@@ -121,7 +122,7 @@ export default [
       } else {
         cb = `管理员才可以进行此操作哦`;
       }
-      await fishpi.chatroom.send(cb);
+      await chat.chatRoomSend(cb);
       return false;
     },
     enable: true,
@@ -146,7 +147,7 @@ export default [
       } catch (e) {
         cb = "参数错误";
       }
-      await fishpi.chatroom.send(cb);
+      await chat.chatRoomSend(cb);
       return false;
     },
     enable: true,
